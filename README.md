@@ -31,7 +31,7 @@ In a Linux machine:
 5. Create the namespace and configMap: 
 * kubectl create namespace bgpalerter
 * kubectl create cm bgpalerter-config -n bgpalerter --from-file=config.yml
-* kubectl create cm bgpalerter-config -n bgpalerter --from-file=prefixes.yml
+* kubectl create cm bgpalerter-prefixes -n bgpalerter --from-file=prefixes.yml
 
 6. Create the deployment using the file from this repo:
 * kubectl aaply -f deployment-bgpalerter.yaml
