@@ -1,0 +1,66 @@
+--- 
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: bgpalerter
+  name: bgpalerter
+  labels:
+    app: bgpalerter
+spec:
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: bgpalerter
+  template:
+    metadata:
+      labels:
+        app: bgpalerter
+    spec:
+      containers:
+      - name: bgpalerter
+        image: nttgin/bgpalerter:latest
+        #command: ["run serve"]
+        env:
+          - name: TZ
+            value: "America/Santo_Domingo"
+        volumeMounts:
+        - name: bgpalerter-prefixes
+          mountPath: /opt/bgpalerter/prefixes.yml
+          subPath: prefixes.yml
+        - name: bgpalerter-config
+          mountPath: /opt/bgpalerter/config.yml
+          subPath: config.yml
+        ports:
+        - name: bgpalerter-tcp
+          containerPort: 8011
+          protocol: TCP
+        resources:
+          limits:
+            cpu: "1"
+            memory: 512Mi
+          requests:
+            cpu: 500m
+            memory: 256Mi
+      volumes:
+      - name: bgpalerter-prefixes
+        configMap:
+          name: bgpalerter-prefixes
+      - name: bgpalerter-config
+        configMap:
+          name: bgpalerter-config-v2
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: bgpalerter
+  namespace: bgpalerter
+  labels:
+    app: bgpalerter
+spec:
+  ports:
+  - port: 8011
+    name: bgpalerter-tcp-8011
+  selector:
+    app: bgpalerter
+  sessionAffinity: "ClientIP"
