@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
       - name: bgpalerter
-        image: nttgin/bgpalerter:latest
+        image: nttgin/bgpalerter:v1.28.0
         #command: ["run serve"]
         env:
           - name: TZ
